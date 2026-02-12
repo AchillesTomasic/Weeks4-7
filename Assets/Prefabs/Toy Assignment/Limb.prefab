@@ -72,6 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5277040018625269433}
   - component: {fileID: 6003944367939711216}
+  - component: {fileID: 1820793073677218999}
   m_Layer: 0
   m_Name: Limb
   m_TagString: Untagged
@@ -151,3 +152,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1820793073677218999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4630155809527271003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3faf15bf16916e43abd609a6ed4ad10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frontSegment: {fileID: 3317914243474304036}
+  backSegment: {fileID: 2263061470232098311}
