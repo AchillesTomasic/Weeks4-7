@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     {
         rotateToClickPos();
         limbAdditionManager();
-        limbMover();
+        //limbMover();
     }
     // rotates the head segment in the direction of the users mouse click
     void rotateToClickPos()
@@ -63,6 +63,8 @@ public class PlayerController : MonoBehaviour
             limbCounter -= 1;//subtracts from the counter
           }
     }
+    /*
+    // rework this
     // moves the limbs
     void limbMover(){
         for(int i = 0; i < limbObj.Count; i++){
@@ -81,14 +83,17 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    // rework this 
     // function to move a limb towards a target, was not sure if we could use moveTo so i made the functionality myself
     Vector3 moveTowardsLimb(Vector3 currentPos,Vector3 endPos,float speed){
         Vector3 posDif = endPos - currentPos; // gets the difference between the two positions
         float dif = posDif.magnitude; // makes the posdif into a single value, length of a line between a and b
         // checks if there is no difference
-        if(dif <= speed){
+        if(dif <= speed * Time.deltaTime){
             return endPos;// doesnt change position if its already equal or is close enough, stops flickering
         }
-        return currentPos + posDif / dif * speed; //gets the current difference between points, then divides the distance multiplies by the speed to move in correct direction
+        return currentPos + posDif / dif * speed * Time.deltaTime; //gets the current difference between points, then divides the distance multiplies by the speed to move in correct direction
     }
+}
+*/
 }
