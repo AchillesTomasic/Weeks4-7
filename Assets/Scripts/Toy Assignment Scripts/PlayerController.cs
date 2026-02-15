@@ -15,7 +15,8 @@ public class PlayerController : MonoBehaviour
     public int numberOfLimbs; // sets the number of limbs
     private int limbCounter; // seperatly counts the limbs to cleanly add and subtract number
     public GameObject limbPrefab; // prefab of the limb
-    public float limbMoveSpeed; // speed the limbs move towards eachother
+    public float limbRotSpeed; // speed the limbs move towards eachother
+    public float limbMoveSpeed; // speed of the limbs
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +29,8 @@ public class PlayerController : MonoBehaviour
     {
         rotateToClickPos();
         limbAdditionManager();
-        //limbMover();
+        followLimbLeader();
+        
     }
     // rotates the head segment in the direction of the users mouse click
     void rotateToClickPos()
@@ -63,37 +65,32 @@ public class PlayerController : MonoBehaviour
             limbCounter -= 1;//subtracts from the counter
           }
     }
-    /*
-    // rework this
-    // moves the limbs
-    void limbMover(){
-        for(int i = 0; i < limbObj.Count; i++){
-            // if its the first on the list, attach to head
-            if(i == 0){
-               limbObj[i].GetComponent<Transform>().position = moveTowardsLimb(
-               limbObj[i].GetComponent<Limb>().frontSegment.position,
-               backHeadSegment.position,
-               limbMoveSpeed);
+    void followLimbLeader(){
+        for(int i = 0; i < limbObj.Count;i++)
+        {
+            float limbGradSpeed = Mathf.Lerp(10f, 1000f, i / limbObj.Count - 1); // changes the speed of the segments depending on the position, keeping the earlier segments of the body attached correctly
+            //if its the first limb on the list, follow the head
+            if(limbObj[i] == limbObj[0])
+            {
+                Vector3 targetRotDir = backHeadSegment.position - limbObj[i].GetComponent<Transform>().position; // target position that the front part of the limb will follow
+                // to stop flickering rotation in  the limbs, check if the magnitude to see how far each segment is to one another
+                if(targetRotDir.sqrMagnitude > 0.0001f)
+                 {
+                limbObj[i].GetComponent<Transform>().right = Vector3.Lerp(limbObj[i].GetComponent<Transform>().right, targetRotDir,limbGradSpeed * Time.deltaTime);  // rotates the limb towards the back of the heads direction
+                 }     
+                  limbObj[i].GetComponent<Transform>().position = Vector3.Lerp(limbObj[i].GetComponent<Transform>().position,backHeadSegment.position, 0.99f * Time.deltaTime); // follows the back of the head by moving towards its position
+
             }
             else{
-               limbObj[i].GetComponent<Transform>().position = moveTowardsLimb(
-               limbObj[i].GetComponent<Limb>().frontSegment.position,
-               limbObj[i - 1].GetComponent<Limb>().backSegment.position,
-               limbMoveSpeed); 
+                 Vector3 targetRotDir = limbObj[i - 1].GetComponent<Limb>().backSegment.position  - limbObj[i].GetComponent<Transform>().position; // target position that the front part of the limb will follow
+                // to stop flickering rotation in  the limbs, check if the magnitude to see how far each segment is to one another
+                if(targetRotDir.sqrMagnitude > 0.0001f)
+                 {
+                limbObj[i].GetComponent<Transform>().right = Vector3.Lerp(limbObj[i].GetComponent<Transform>().right, targetRotDir,limbGradSpeed* Time.deltaTime);  // rotates the limb towards the back of the previous direction
+                 }
+                 limbObj[i].GetComponent<Transform>().position = Vector3.Lerp(limbObj[i].GetComponent<Transform>().position,limbObj[i - 1].GetComponent<Limb>().backSegment.position, limbMoveSpeed  * Time.deltaTime); // follows the back of the previous limb by moving towards its position
             }
         }
     }
-    // rework this 
-    // function to move a limb towards a target, was not sure if we could use moveTo so i made the functionality myself
-    Vector3 moveTowardsLimb(Vector3 currentPos,Vector3 endPos,float speed){
-        Vector3 posDif = endPos - currentPos; // gets the difference between the two positions
-        float dif = posDif.magnitude; // makes the posdif into a single value, length of a line between a and b
-        // checks if there is no difference
-        if(dif <= speed * Time.deltaTime){
-            return endPos;// doesnt change position if its already equal or is close enough, stops flickering
-        }
-        return currentPos + posDif / dif * speed * Time.deltaTime; //gets the current difference between points, then divides the distance multiplies by the speed to move in correct direction
-    }
-}
-*/
+
 }

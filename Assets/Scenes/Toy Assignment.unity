@@ -583,9 +583,10 @@ MonoBehaviour:
   headSegment: {fileID: 524613466}
   backHeadSegment: {fileID: 1492653246}
   limbObj: []
-  numberOfLimbs: 0
+  numberOfLimbs: 111
   limbPrefab: {fileID: 4630155809527271003, guid: b0fa2fa25ffff92458b0b2ab7f2a5af6, type: 3}
-  limbMoveSpeed: 0.5
+  limbRotSpeed: 3
+  limbMoveSpeed: 1
 --- !u!4 &1052553396
 Transform:
   m_ObjectHideFlags: 0
