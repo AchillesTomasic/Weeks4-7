@@ -77,7 +77,11 @@ public class PlayerController : MonoBehaviour
                 if(targetRotDir.sqrMagnitude > 0.0001f)
                  {
                 limbObj[i].GetComponent<Transform>().right = Vector3.Lerp(limbObj[i].GetComponent<Transform>().right, targetRotDir,limbGradSpeed * Time.deltaTime);  // rotates the limb towards the back of the heads direction
-                 }     
+                 }  
+                 // if the limbs begin to disconnect from one another, push them in the targets direction faster to ensure they connect
+                 if(targetRotDir.sqrMagnitude > 0.5f){
+                    limbObj[i].GetComponent<Transform>().position += targetRotDir  / 10; // adds to the limbs direction by a smaller amount than the target position 
+                 }   
                   limbObj[i].GetComponent<Transform>().position = Vector3.Lerp(limbObj[i].GetComponent<Transform>().position,backHeadSegment.position, 0.99f * Time.deltaTime); // follows the back of the head by moving towards its position
 
             }
@@ -87,6 +91,10 @@ public class PlayerController : MonoBehaviour
                 if(targetRotDir.sqrMagnitude > 0.0001f)
                  {
                 limbObj[i].GetComponent<Transform>().right = Vector3.Lerp(limbObj[i].GetComponent<Transform>().right, targetRotDir,limbGradSpeed* Time.deltaTime);  // rotates the limb towards the back of the previous direction
+                 }
+                 // if the limbs begin to disconnect from one another, push them in the targets direction faster to ensure they connect
+                 if(targetRotDir.sqrMagnitude > 1f){
+                    limbObj[i].GetComponent<Transform>().position += targetRotDir  / 10;// adds to the limbs direction by a smaller amount than the target position 
                  }
                  limbObj[i].GetComponent<Transform>().position = Vector3.Lerp(limbObj[i].GetComponent<Transform>().position,limbObj[i - 1].GetComponent<Limb>().backSegment.position, limbMoveSpeed  * Time.deltaTime); // follows the back of the previous limb by moving towards its position
             }
