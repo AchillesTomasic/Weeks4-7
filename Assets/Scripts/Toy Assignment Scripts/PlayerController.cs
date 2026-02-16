@@ -10,6 +10,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 clickPos; // saves the players current click position
     private float rotSpeedHead = 3; // speed of rotation for head segment;
     public Transform backHeadSegment; // head segments back section
+    public float playerSpeed;// sets speed for player to move by
+    private float speedChanger; // changes the speed overTime
+    public float dragF; // drag for the players velocity
+    public float MaxSpeed; // max Speed the player can reach
     //manages the limb segments //
     public List<GameObject> limbObj = new List<GameObject>(); // list of limb objects
     public int numberOfLimbs; // sets the number of limbs
@@ -30,6 +34,8 @@ public class PlayerController : MonoBehaviour
         rotateToClickPos();
         limbAdditionManager();
         followLimbLeader();
+        MovePlayer();
+        CameraPos();
         
     }
     // rotates the head segment in the direction of the users mouse click
@@ -79,7 +85,7 @@ public class PlayerController : MonoBehaviour
                 limbObj[i].GetComponent<Transform>().right = Vector3.Lerp(limbObj[i].GetComponent<Transform>().right, targetRotDir,limbGradSpeed * Time.deltaTime);  // rotates the limb towards the back of the heads direction
                  }  
                  // if the limbs begin to disconnect from one another, push them in the targets direction faster to ensure they connect
-                 if(targetRotDir.sqrMagnitude > 0.5f){
+                 if(targetRotDir.sqrMagnitude > 0.3f){
                     limbObj[i].GetComponent<Transform>().position += targetRotDir  / 10; // adds to the limbs direction by a smaller amount than the target position 
                  }   
                   limbObj[i].GetComponent<Transform>().position = Vector3.Lerp(limbObj[i].GetComponent<Transform>().position,backHeadSegment.position, 0.99f * Time.deltaTime); // follows the back of the head by moving towards its position
@@ -100,5 +106,21 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    // function moves the head of the fish in the direction that the player clicked
+    void MovePlayer()
+    {
+        // if any key is pressed, push the player forwards
+        if (Keyboard.current.anyKey.wasPressedThisFrame)
+    {
+        speedChanger += playerSpeed * Time.deltaTime; // incriments the player speed with each click
+    }
+    speedChanger -= Time.deltaTime / dragF; // slows down the speed overtime by time and the drag
+    speedChanger = Mathf.Clamp(speedChanger,0,MaxSpeed);// makes sure player can hit max speed and min speed
+    headTransform.position += (- headTransform.right) * speedChanger * Time.deltaTime; // moves the player based on their head rotation by speed and time
+    }
+    // sets the cameras pos
+    void CameraPos(){
+        Camera.main.GetComponent<Transform>().position = new Vector3(headTransform.position.x,headTransform.position.y,Camera.main.GetComponent<Transform>().position.z);
 
+    }
 }
