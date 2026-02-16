@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,13 @@ public class PlayerController : MonoBehaviour
     public GameObject limbPrefab; // prefab of the limb
     public float limbRotSpeed; // speed the limbs move towards eachother
     public float limbMoveSpeed; // speed of the limbs
+    // tail segment
+    public Transform tailTransform; // transform for the tail
+    // mouth segments
+    public Slider mouthRot; //slider used for the mouth
+    public Transform mouthTransform; // mouth for the transform
+    public GameObject mouthRadius; // radius for food to be picked up
+    public int foodInMouth; // checks if food is in mouth, 0 for no, 1 for yes
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,7 +44,9 @@ public class PlayerController : MonoBehaviour
         followLimbLeader();
         MovePlayer();
         CameraPos();
-        
+        setTailSegment();
+        MouthSlider();
+        FlipThelimbs();
     }
     // rotates the head segment in the direction of the users mouse click
     void rotateToClickPos()
@@ -86,7 +96,7 @@ public class PlayerController : MonoBehaviour
                  }  
                  // if the limbs begin to disconnect from one another, push them in the targets direction faster to ensure they connect
                  if(targetRotDir.sqrMagnitude > 0.3f){
-                    limbObj[i].GetComponent<Transform>().position += targetRotDir  / 10; // adds to the limbs direction by a smaller amount than the target position 
+                    limbObj[i].GetComponent<Transform>().position += (targetRotDir  * 12) * Time.deltaTime ; // adds to the limbs direction by a smaller amount than the target position 
                  }   
                   limbObj[i].GetComponent<Transform>().position = Vector3.Lerp(limbObj[i].GetComponent<Transform>().position,backHeadSegment.position, 0.99f * Time.deltaTime); // follows the back of the head by moving towards its position
 
@@ -100,7 +110,7 @@ public class PlayerController : MonoBehaviour
                  }
                  // if the limbs begin to disconnect from one another, push them in the targets direction faster to ensure they connect
                  if(targetRotDir.sqrMagnitude > 1f){
-                    limbObj[i].GetComponent<Transform>().position += targetRotDir  / 10;// adds to the limbs direction by a smaller amount than the target position 
+                    limbObj[i].GetComponent<Transform>().position += (targetRotDir  * 10) * Time.deltaTime;// adds to the limbs direction by a smaller amount than the target position 
                  }
                  limbObj[i].GetComponent<Transform>().position = Vector3.Lerp(limbObj[i].GetComponent<Transform>().position,limbObj[i - 1].GetComponent<Limb>().backSegment.position, limbMoveSpeed  * Time.deltaTime); // follows the back of the previous limb by moving towards its position
             }
@@ -122,5 +132,68 @@ public class PlayerController : MonoBehaviour
     void CameraPos(){
         Camera.main.GetComponent<Transform>().position = new Vector3(headTransform.position.x,headTransform.position.y,Camera.main.GetComponent<Transform>().position.z);
 
+    }
+    // sets the tail limb segment
+    void setTailSegment(){
+        Vector3 targetRotDir = limbObj[limbObj.Count - 1].GetComponent<Transform>().position - tailTransform.position; // target position that the front part of the tail will follow
+                // to stop flickering rotation in  the tail, check if the magnitude to see how far the tail is from the back
+                if(targetRotDir.sqrMagnitude > 0.0001f)
+                 {
+                tailTransform.right = Vector3.Lerp(tailTransform.right, targetRotDir, 10* Time.deltaTime);  // rotates the tail towards the back of the previous direction
+                 }
+                 // if the tail begins to disconnect from one another, push them in the targets direction faster to ensure they connect
+                 if(targetRotDir.sqrMagnitude > 1f){
+                    tailTransform.position += (targetRotDir  * 10) * Time.deltaTime;// adds to the tails direction by a smaller amount than the target position 
+                 }
+                 tailTransform.position = Vector3.Lerp(tailTransform.position,limbObj[limbObj.Count - 1].GetComponent<Limb>().backSegment.position, limbMoveSpeed  * Time.deltaTime); // follows the back of the previous limb by moving towards its position
+    }
+    //function for the mouth slider
+    void MouthSlider(){
+        Vector3 mouthCurrentRot = mouthTransform.localEulerAngles; // obtains the angle of the mouth hinge
+        mouthCurrentRot.z = Map(mouthRot.value,0, 100,0, 120); // maps the sliders values to the rotation needed, then sets that value to the z of the mouth rotation obtained
+        mouthTransform.localEulerAngles = mouthCurrentRot;// sets the new mouth rotation
+
+    }
+    // flips the orientation of the limbs if they need to turn
+    void FlipThelimbs()
+    {
+        // if the players head is pointing to the right, flip the scale to a negative
+        if(headTransform.localEulerAngles.z > 90 && headTransform.localEulerAngles.z < 270){
+            headTransform.localScale = new Vector3(headTransform.localScale.x, -1,headTransform.localScale.z); // flips the local scale to a negative value
+        }
+        // flip the players head back to the original direction if it is facing left
+        else{
+             headTransform.localScale = new Vector3(headTransform.localScale.x, 1,headTransform.localScale.z);// flips the local scale back to its original value
+        }
+        // loops over every limb, then flips the sprite renderer of each object
+        foreach(GameObject limbFlip in limbObj){
+            // checks if the limbs rotation is point right
+            if(limbFlip.GetComponent<Transform>().localEulerAngles.z > 90 && limbFlip.GetComponent<Transform>().localEulerAngles.z < 270){
+            // flips the sprite renderer
+            limbFlip.GetComponent<SpriteRenderer>().flipX = true; 
+            limbFlip.GetComponent<SpriteRenderer>().flipY = true;
+            }
+            // if the limbs rotation is pointing to the left
+            else{
+                // flips the sprite renderer
+                limbFlip.GetComponent<SpriteRenderer>().flipX = false;
+                limbFlip.GetComponent<SpriteRenderer>().flipY = false;
+            }
+        }
+        // if the players tail is pointing to the right, flip the scale to a negative
+        if(tailTransform.localEulerAngles.z > 90 && tailTransform.localEulerAngles.z < 270){
+            tailTransform.localScale = new Vector3(tailTransform.localScale.x, -1,tailTransform.localScale.z); // flips the local scale to a negative value
+        }
+        // flip the players tail back to the original direction if it is facing left
+        else{
+             tailTransform.localScale = new Vector3(tailTransform.localScale.x, 1,tailTransform.localScale.z);// flips the local scale back to its original value
+        }
+
+    }
+    // function created to work similarly to the map function in processing, calculation was used from the refrence in the miro board
+    float Map(float value, float prevMin, float prevMax, float newMin,float newMax)
+    {
+        return newMin + (newMax - newMin) * ((value-prevMin)/(prevMax-prevMin)); // calculates the new translated values
+        
     }
 }
