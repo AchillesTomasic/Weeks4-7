@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    // used for the boundaires of the gameworld
+    public GameObject boundingBox;
     // manages the head segment
     public GameObject headSegment; // obtains a refrence of the players head segment GameObject
     private Transform headTransform; // heads transform for the object
@@ -47,6 +49,7 @@ public class PlayerController : MonoBehaviour
         setTailSegment();
         MouthSlider();
         FlipThelimbs();
+        boundaries();
     }
     // rotates the head segment in the direction of the users mouse click
     void rotateToClickPos()
@@ -195,5 +198,40 @@ public class PlayerController : MonoBehaviour
     {
         return newMin + (newMax - newMin) * ((value-prevMin)/(prevMax-prevMin)); // calculates the new translated values
         
+    }
+    // used for controlling the button
+    public void mouthButtonToggle(){
+        bool activeStat = true; // used so that it can flick between both states
+        // checks if slider is active
+        if(mouthRot.interactable && activeStat){
+            mouthRot.interactable = false; // deactivates the slider
+            activeStat = false; // stops any futher command from happening
+        }
+        // checks if slider is not active
+        if(mouthRot.interactable == false && activeStat){
+            mouthRot.interactable = true;// activates the slider
+            activeStat = false; // stops any futher command from happening
+
+        }
+    }
+    // sets the boundaries of the world
+    void boundaries(){
+        Transform boundsTran = boundingBox.GetComponent<Transform>();
+        // used to constrict the downward position of the map
+        if(headTransform.position.y < -boundsTran.localScale.y / 2){
+            headTransform.position = new Vector2(headTransform.position.x,-boundsTran.localScale.y / 2); // sets the new position of the player
+        }
+        // used to constrict the upwards position of the map
+        if(headTransform.position.y > boundsTran.localScale.y / 2){
+            headTransform.position = new Vector2(headTransform.position.x,boundsTran.localScale.y / 2);// sets the new position of the player
+        }
+        // teleports to the right side of the map
+        if(headTransform.position.x < -boundsTran.localScale.x / 2){
+            headTransform.position = new Vector2(boundsTran.localScale.x / 2,headTransform.position.y);// sets the new position of the player
+        }
+        // teleports to the left side of the map
+        if(headTransform.position.x > boundsTran.localScale.x / 2){
+            headTransform.position = new Vector2(-boundsTran.localScale.x / 2,headTransform.position.y);// sets the new position of the player
+        }
     }
 }
