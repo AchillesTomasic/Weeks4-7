@@ -14,8 +14,8 @@ public class FoodManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        destroyFood();
-        SpawnTimer();
+        destroyFood(); // destroys the food object
+        SpawnTimer(); // used to spawn the food using a timer
     }
     // spawns the food over a timer
     void SpawnTimer()

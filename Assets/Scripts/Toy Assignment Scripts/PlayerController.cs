@@ -43,16 +43,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rotateToClickPos();
-        limbAdditionManager();
-        followLimbLeader();
-        MovePlayer();
-        CameraPos();
-        setTailSegment();
-        MouthSlider();
-        FlipThelimbs();
-        boundaries();
-        clickVisual();
+        rotateToClickPos(); // rotates the head component to the direction of the click
+        limbAdditionManager(); // manages the limbs of the player
+        followLimbLeader(); // allows each limb to follow their leader component
+        MovePlayer();// moves the player in the direciton of the last click
+        CameraPos(); // moves the camera on top of the player when active
+        setTailSegment();// sets the tail segment to follow the player
+        MouthSlider();// acts as a slider that rotates the players mouth
+        FlipThelimbs();// flips the direction that the limbs are facing depending on how the player moves
+        boundaries(); // sets the boundaries of the worldspace for the player
+        clickVisual();// sets a gameobject for the pointer to visually show the players clicks
     }
     // rotates the head segment in the direction of the users mouse click
     void rotateToClickPos()

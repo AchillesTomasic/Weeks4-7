@@ -22,10 +22,10 @@ public class FoodController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        hoverOverFood();
+        hoverOverFood(); // checks if the player is hovering over the food, then shows a textbox to the player and changes it depending on the size of the food
         // checks if the mouth is eathing this food obj
         if(stateInMouth == 1){
-        beingEaten();
+        beingEaten(); // checks if the player has this food object in their mouth, or if they can enter
         }
         Transform mouthTran = playerScript.mouthRadius.GetComponent<Transform>(); // gets the transform of the mouth
         capturedFood(playerScript.foodInMouth,mouthTran.position,mouthTran.localScale);

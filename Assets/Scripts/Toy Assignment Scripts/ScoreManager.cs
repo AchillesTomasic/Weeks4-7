@@ -16,8 +16,8 @@ public class ScoreManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        setScoreText();
-        addToSize();
+        setScoreText(); // sets the text for the players length
+        addToSize();// adds to the size of the player so that they grow correctly
     }
     void addToSize(){
         // checks if the player has eaten enough food to grow, by comparing the score the the requred size of growth
