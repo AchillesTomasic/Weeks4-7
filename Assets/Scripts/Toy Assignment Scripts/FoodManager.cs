@@ -11,7 +11,6 @@ public class FoodManager : MonoBehaviour
     public ScoreManager score;// grabs the score for the game
     public GameObject foodPrefab; // gets the prefab for the food
     public List<GameObject> foodList = new List<GameObject>(); // list of food objects
-
     // Update is called once per frame
     void Update()
     {
@@ -21,6 +20,7 @@ public class FoodManager : MonoBehaviour
     // spawns the food over a timer
     void SpawnTimer()
     {
+        // checks if it can spawn food into the scene
         if(foodInScene < maxFoodInScene){
             timer += Time.deltaTime; // adds to the timer
             if(timer >= maxTimer){
@@ -32,7 +32,8 @@ public class FoodManager : MonoBehaviour
  
     void spawn()
     {
-        GameObject foodObj = Instantiate(foodPrefab, new Vector3(5,0,0), Quaternion.identity);// spawns in the food prefab
+        Transform boundaries = player.boundingBox.GetComponent<Transform>();
+        GameObject foodObj = Instantiate(foodPrefab, new Vector3(Random.Range(-boundaries.localScale.x / 2,boundaries.localScale.x / 2),Random.Range(-boundaries.localScale.y / 2,boundaries.localScale.y / 2),0), Quaternion.identity);// spawns in the food prefab
         foodObj.GetComponent<FoodController>().scoreCode = score; // sets the score script for the food
         foodObj.GetComponent<FoodController>().playerScript = player;// sets the player script for the food
         foodList.Add(foodObj);// adds food object to the list

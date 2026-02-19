@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     // used for the boundaires of the gameworld
-    public GameObject boundingBox;
+    public GameObject boundingBox; // used as gameobject to determine the size of the level
+    // used for the player click visual
+    public GameObject visualLastclick; // gameobject that visually shows the players last click
     // manages the head segment
     public GameObject headSegment; // obtains a refrence of the players head segment GameObject
     private Transform headTransform; // heads transform for the object
@@ -50,6 +52,7 @@ public class PlayerController : MonoBehaviour
         MouthSlider();
         FlipThelimbs();
         boundaries();
+        clickVisual();
     }
     // rotates the head segment in the direction of the users mouse click
     void rotateToClickPos()
@@ -155,6 +158,7 @@ public class PlayerController : MonoBehaviour
         Vector3 mouthCurrentRot = mouthTransform.localEulerAngles; // obtains the angle of the mouth hinge
         mouthCurrentRot.z = Map(mouthRot.value,0, 100,0, 120); // maps the sliders values to the rotation needed, then sets that value to the z of the mouth rotation obtained
         mouthTransform.localEulerAngles = mouthCurrentRot;// sets the new mouth rotation
+        
 
     }
     // flips the orientation of the limbs if they need to turn
@@ -233,5 +237,10 @@ public class PlayerController : MonoBehaviour
         if(headTransform.position.x > boundsTran.localScale.x / 2){
             headTransform.position = new Vector2(-boundsTran.localScale.x / 2,headTransform.position.y);// sets the new position of the player
         }
+    }
+    // sets the locaiton of the player click
+    void clickVisual()
+    {
+        visualLastclick.GetComponent<Transform>().position = clickPos; // sets the click redicule to the position of the players last click
     }
 }
