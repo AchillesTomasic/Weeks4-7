@@ -14,10 +14,10 @@ public class FoodController : MonoBehaviour
     public bool destroyThisFood = false;// when active, removes the food from the list and destroys it
     public TextMeshProUGUI name; // text for the food
     public GameObject nameTag; // used to activate and disable food text
-    private int selectSize; // sets a variable for the size (only affects the text)
+    public int selectSize; // sets a variable for the size (only affects the text)
     // start is called at the start
     void Start(){
-        int selectSize = Random.Range(0,3); // randomly selects a size
+        selectSize = Random.Range(0,3); // randomly selects a number to use for changing the text
     }
     // Update is called once per frame
     void Update()
